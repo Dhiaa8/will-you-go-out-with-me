@@ -1,58 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Just a question ❤️</title>
+  <meta charset="UTF-8">
+  <title>Just a Question</title>
 
   <style>
     body {
       height: 100vh;
+      margin: 0;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-family: Arial, sans-serif;
-      background: #ffe6f0;
+      font-family: "Georgia", serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: #ffffff;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      font-weight: normal;
+      margin-bottom: 40px;
     }
 
     .buttons {
       position: relative;
+      height: 120px;
     }
 
     button {
-      padding: 15px 30px;
+      padding: 14px 32px;
       font-size: 18px;
-      margin: 10px;
+      border: none;
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #yes {
+      background: #ffffff;
+      color: #1f1c2c;
+    }
+
+    #no {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid #ffffff;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
   </style>
 </head>
 
 <body>
 
-  <h1>Will you go out with me? ❤️</h1>
+  <div class="container">
+    <h1>Will you go out with me?</h1>
 
-  <div class="buttons">
-    <button onclick="yes()">Yes 😍</button>
-    <button id="no">No 🙃</button>
+    <div class="buttons">
+      <button id="yes">Yes</button>
+      <button id="no">No</button>
+    </div>
   </div>
 
   <script>
-    const noButton = document.getElementById("no");
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
 
-    noButton.addEventListener("mouseover", () => {
-      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
+    let noCount = 0;
 
-      noButton.style.position = "absolute";
-      noButton.style.left = x + "px";
-      noButton.style.top = y + "px";
-    });
+    const noTexts = [
+      "No",
+      "Are you sure?",
+      "Are you certain?",
+      "Please?",
+      "Think again"
+    ];
 
-    function yes() {
-      document.body.innerHTML =
-        "<h1>I knew you’d say YES ❤️🥰</h1>";
+    function moveNo() {
+      noCount++;
+
+      // Change text
+      if (noCount < noTexts.length) {
+        noBtn.innerText = noTexts[noCount];
+      }
+
+      // Move NO
+      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+
+      // Make YES bigger
+      yesBtn.style.transform = `scale(${1 + noCount * 0.15})`;
+
+      // Make NO smaller and disappear
+      if (noCount >= 5) {
+        noBtn.style.opacity = "0";
+        noBtn.style.pointerEvents = "none";
+      }
     }
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("click", moveNo);
+    noBtn.addEventListener("touchstart", moveNo);
+
+    yesBtn.addEventListener("click", () => {
+      document.body.innerHTML = `
+        <div style="text-align:center; font-family: Georgia, serif; color:#ffffff;">
+          <h1>I was hoping you would say yes.</h1>
+          <p>This means more to me than you think.</p>
+        </div>
+      `;
+    });
   </script>
 
 </body>
 </html>
+
