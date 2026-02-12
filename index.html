@@ -5,6 +5,13 @@
   <title>Just a Question</title>
 
   <style>
+    /* Elegant animated gradient background */
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
     body {
       height: 100vh;
       margin: 0;
@@ -12,30 +19,38 @@
       justify-content: center;
       align-items: center;
       font-family: "Georgia", serif;
-      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      background: linear-gradient(-45deg, #1f1c2c, #928dab, #6e7dab, #2e2c3a);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      overflow: hidden;
       color: #ffffff;
     }
 
     .container {
       text-align: center;
+      position: relative;
     }
 
     h1 {
       font-weight: normal;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
+      font-size: 2.2em;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
     }
 
     .buttons {
       position: relative;
-      height: 120px;
+      height: 150px;
     }
 
     button {
-      padding: 14px 32px;
-      font-size: 18px;
+      padding: 16px 36px;
+      font-size: 20px;
       border: none;
       cursor: pointer;
       transition: all 0.3s ease;
+      border-radius: 8px;
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
     }
 
     #yes {
@@ -50,6 +65,35 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
+    }
+
+    /* Hearts animation */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 3s linear infinite;
+      opacity: 0.8;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: 10px; top: 0; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1;}
+      100% { transform: translateY(-300px) rotate(45deg); opacity: 0;}
     }
   </style>
 </head>
@@ -68,7 +112,6 @@
   <script>
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
-
     let noCount = 0;
 
     const noTexts = [
@@ -79,29 +122,42 @@
       "Think again"
     ];
 
+    // Move NO button
     function moveNo() {
       noCount++;
 
-      // Change text
-      if (noCount < noTexts.length) {
+      // Change NO text
+      if(noCount < noTexts.length){
         noBtn.innerText = noTexts[noCount];
       }
 
-      // Move NO
+      // Move NO to random position
       const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
       const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
 
-      // Make YES bigger
+      // Make YES grow
       yesBtn.style.transform = `scale(${1 + noCount * 0.15})`;
 
-      // Make NO smaller and disappear
-      if (noCount >= 5) {
+      // Fade out NO eventually
+      if(noCount >= 5){
         noBtn.style.opacity = "0";
         noBtn.style.pointerEvents = "none";
       }
+
+      // Add floating heart occasionally
+      if(Math.random() < 0.5) createHeart();
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * window.innerWidth + "px";
+      heart.style.bottom = "0px";
+      document.body.appendChild(heart);
+
+      setTimeout(()=>{heart.remove()}, 3000);
     }
 
     noBtn.addEventListener("mouseenter", moveNo);
@@ -111,13 +167,14 @@
     yesBtn.addEventListener("click", () => {
       document.body.innerHTML = `
         <div style="text-align:center; font-family: Georgia, serif; color:#ffffff;">
-          <h1>I was hoping you would say yes.</h1>
-          <p>This means more to me than you think.</p>
+          <h1>I knew you’d say YES.</h1>
+          <p>You just made my day more than you know.</p>
         </div>
       `;
+      // Start hearts raining after YES
+      setInterval(createHeart, 500);
     });
   </script>
 
 </body>
 </html>
-
